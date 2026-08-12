@@ -14,7 +14,27 @@ Voice dictation Chrome extension with a local backend. Click the pill on any pag
 
 **npm packages:** `@pyai/sdk`, `openai` (PyAI-compatible client), `ws`, `dotenv`
 
-Keys live only in `.env` on your machine. The extension never sees API keys — it calls `localhost:4141`.
+Keys live only in `.env` inside this project folder. The extension never sees API keys — it calls `localhost:4141`.
+
+## Self-contained — no external folders
+
+Everything Parley needs lives **in this repo**. There is no dependency on another directory, global config file, or parent project.
+
+| What | Where |
+|------|--------|
+| API keys | `.env` in the project root (create from `.env.example`) |
+| Backend | `browser-server.js` |
+| Chrome extension | `manifest.json`, `content.js`, `content.css`, `popup.html`, `icon128.png` |
+| npm packages | `node_modules/` (created by `npm install`) |
+
+The only things **not** in git (by design):
+
+- **`.env`** — your secrets; copy or recreate on each machine
+- **`node_modules/`** — reinstall with `npm install` after clone
+
+Batch transcription writes short-lived temp WAV files to the OS temp folder (`os.tmpdir()`); that is automatic and not something you configure.
+
+To move Parley to another computer: clone/copy this folder → `npm install` → create `.env` → `npm run server` → load the extension in Chrome.
 
 ## API keys
 
@@ -40,7 +60,7 @@ There is no separate “summarize email” API — **Draft email** turns your sp
 
 ## Prerequisites
 
-- **Node.js 18+**
+- **Node.js 18+** (Windows, macOS, or Linux)
 - **Google Chrome** (or Chromium)
 - **PyAI API key** — [console.pyai.com](https://console.pyai.com) (needs `hear:stream` and `hear:transcribe` for STT; `voice:synthesize` for read-aloud)
 - **Groq API key** — [console.groq.com](https://console.groq.com) (for draft email and tone tools)
@@ -62,9 +82,14 @@ npm install
 
 ### 3. Configure environment variables
 
+Copy the example env file:
+
 ```bash
 cp .env.example .env
 ```
+
+On Windows (Command Prompt): `copy .env.example .env`  
+On Windows (PowerShell): `Copy-Item .env.example .env`
 
 Edit `.env` and add your keys:
 
@@ -72,6 +97,8 @@ Edit `.env` and add your keys:
 PYAI_API_KEY=your_pyai_key_here
 GROQ_API_KEY=your_groq_key_here
 ```
+
+> **Sharing across machines:** `.env` is gitignored and will not come with `git clone`. On each new system, copy `.env.example` to `.env` and paste your keys (or copy your `.env` file manually via USB/cloud — never commit it to GitHub).
 
 ### 4. Start the backend
 

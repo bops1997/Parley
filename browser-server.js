@@ -1,10 +1,10 @@
 // Parley — local backend. Serves nothing much; proxies audio to PyAI Hear (transcribe),
 // text to PyAI Speak (talk-back), and text to Groq (refine: draft email, tone, grammar).
-require("dotenv").config();
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, ".env") });
 const http = require("http");
 const fs = require("fs");
 const os = require("os");
-const path = require("path");
 const { WebSocketServer } = require("ws");
 const WebSocket = require("ws");
 const OpenAI = require("openai");
