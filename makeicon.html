@@ -1,0 +1,24 @@
+<!doctype html>
+<body style="font-family:sans-serif;padding:24px">
+<canvas id="c" width="128" height="128" style="border-radius:30px"></canvas>
+<p id="msg">generating…</p>
+<script>
+const x = c.getContext('2d');
+const g = x.createLinearGradient(0,0,128,128);
+g.addColorStop(0,'#5B5BF5'); g.addColorStop(1,'#22C7E6');
+x.fillStyle = g; x.beginPath(); x.roundRect(0,0,128,128,30); x.fill();
+x.strokeStyle = '#fff'; x.lineWidth = 8; x.lineCap = 'round';
+[[40,52,76],[58,38,90],[76,48,80],[94,58,70]].forEach(([px,a,b])=>{
+  x.beginPath(); x.moveTo(px,a); x.lineTo(px,b); x.stroke();
+});
+c.toBlob(blob=>{
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'icon128.png';
+  a.textContent = '⬇︎ Click here to download icon128.png';
+  a.style = 'font-size:18px;display:block;margin-top:12px';
+  document.body.appendChild(a);
+  msg.textContent = 'Ready — click the link below to download:';
+});
+</script>
+</body>

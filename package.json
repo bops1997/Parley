@@ -1,0 +1,22 @@
+{
+  "name": "whisperflow",
+  "version": "1.0.0",
+  "description": "Hold-to-talk dictation overlay powered by PyAI Hear",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "server": "node browser-server.js",
+    "postinstall": "electron-rebuild -f -w node-global-key-listener 2>/dev/null || true"
+  },
+  "dependencies": {
+    "@pyai/sdk": "^0.2.3",
+    "dotenv": "^16.4.7",
+    "node-global-key-listener": "^0.3.0",
+    "openai": "^4.77.0",
+    "ws": "^8.21.3"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "^3.7.1",
+    "electron": "^33.2.1"
+  }
+}

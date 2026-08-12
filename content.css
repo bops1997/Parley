@@ -1,0 +1,113 @@
+/* Parley — glossy floating glass UI. Scoped + reset so host pages can't distort it. */
+#parley-root, #parley-root * { all: revert; box-sizing: border-box; }
+
+/* pill logo = soundwave inside indigo→cyan square */
+#parley-root .parley-orb.pill-square { background: transparent !important; box-shadow: 0 4px 12px -2px rgba(91,91,245,0.5); border-radius: 10px; overflow: hidden; display: grid; place-items: center; }
+#parley-root .parley-orb.pill-square svg { width: 30px !important; height: 30px !important; }
+
+/* panel brand header */
+#parley-root .parley-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+#parley-root .parley-logo { display: inline-flex; filter: drop-shadow(0 6px 14px rgba(91,91,245,0.4)); }
+#parley-root .parley-logo svg { width: 34px; height: 34px; border-radius: 10px; }
+#parley-root .parley-name { font-size: 19px; font-weight: 600; letter-spacing: -0.03em; color: #16161d; }
+
+#parley-root {
+  position: fixed; bottom: 26px; right: 26px; z-index: 2147483647;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif;
+  letter-spacing: -0.01em;
+  display: flex; flex-direction: column; align-items: flex-end; gap: 12px;
+}
+
+/* centered glass panel + close */
+#parley-root .parley-glass {
+  position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.96);
+  width: 440px; max-width: 88vw; max-height: 70vh; border-radius: 24px; padding: 26px 28px;
+  background: linear-gradient(155deg, rgba(255,255,255,0.82), rgba(255,255,255,0.6));
+  -webkit-backdrop-filter: blur(34px) saturate(190%); backdrop-filter: blur(34px) saturate(190%);
+  border: 1px solid rgba(255,255,255,0.65);
+  box-shadow: 0 40px 100px -30px rgba(30,30,60,0.55), inset 0 1px 0 rgba(255,255,255,0.95);
+  opacity: 0; pointer-events: none;
+  transition: opacity .35s cubic-bezier(0.22,1,0.36,1), transform .35s cubic-bezier(0.22,1,0.36,1);
+}
+#parley-root .parley-glass.show { opacity: 1; transform: translate(-50%, -50%) scale(1); pointer-events: auto; }
+#parley-root .parley-glass::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(135deg, rgba(255,255,255,0.55), rgba(255,255,255,0) 40%);
+}
+#parley-root .parley-glass .g-close {
+  position: absolute; top: 16px; right: 16px; width: 28px; height: 28px; border-radius: 50%;
+  border: 0; cursor: pointer; display: grid; place-items: center; font-size: 15px; line-height: 1;
+  color: #6b6b76; background: rgba(0,0,0,0.06); transition: all .15s ease; z-index: 3;
+}
+#parley-root .parley-glass .g-close:hover { background: rgba(0,0,0,0.12); color: #16161d; }
+#parley-root .parley-glass .g-label {
+  position: relative; font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+  color: #5B5BF5; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 7px;
+}
+#parley-root .parley-glass .g-dot { width: 7px; height: 7px; border-radius: 50%; background: #ff5a5f; animation: parleyPulse 1.2s ease-in-out infinite; }
+@keyframes parleyPulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .4; transform: scale(0.7); } }
+#parley-root .parley-glass .g-text {
+  position: relative; font-size: 17px; line-height: 1.55; color: #16161d; letter-spacing: -0.015em;
+  min-height: 24px; max-height: 44vh; overflow-y: auto; white-space: pre-wrap;
+}
+#parley-root .parley-glass .g-text.empty { color: #86868b; }
+
+/* emoji + footer */
+#parley-root .parley-emoji-row { display: none; flex-wrap: wrap; gap: 4px; margin-top: 10px; }
+#parley-root .parley-emoji-row.show { display: flex; }
+#parley-root .parley-emoji-row button { appearance: none; border: 0; cursor: pointer; font-size: 20px; padding: 4px 6px; border-radius: 8px; background: transparent; }
+#parley-root .parley-emoji-row button:hover { background: rgba(0,0,0,0.06); }
+#parley-root .parley-glass .g-foot {
+  display: flex; align-items: center; gap: 8px; margin-top: 16px; padding-top: 14px;
+  border-top: 1px solid rgba(0,0,0,0.07); justify-content: flex-end;
+}
+#parley-root .parley-glass .g-btn {
+  appearance: none; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500;
+  padding: 8px 14px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px;
+  border: 1px solid rgba(0,0,0,0.08); color: #16161d; background: rgba(255,255,255,0.7);
+  transition: all .15s cubic-bezier(0.22,1,0.36,1);
+}
+#parley-root .parley-glass .g-btn:hover { background: rgba(0,0,0,0.05); }
+#parley-root .parley-glass .g-btn.done { background: linear-gradient(135deg, #5B5BF5, #22C7E6); color: #fff; border-color: transparent; }
+#parley-root .parley-glass .g-btn.done:hover { filter: brightness(1.06); }
+
+/* pill (control bar) */
+#parley-root .parley-pill {
+  border-radius: 999px; padding: 8px 8px 8px 14px;
+  background: linear-gradient(155deg, rgba(255,255,255,0.85), rgba(255,255,255,0.62));
+  -webkit-backdrop-filter: blur(24px) saturate(180%); backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.6);
+  box-shadow: 0 12px 34px -10px rgba(30,30,60,0.35), inset 0 1px 0 rgba(255,255,255,0.9);
+  transition: box-shadow .3s cubic-bezier(0.22,1,0.36,1);
+}
+#parley-root .parley-pill[data-state="rec"] { box-shadow: 0 14px 40px -10px rgba(255,90,95,0.45), inset 0 1px 0 rgba(255,255,255,0.9); }
+#parley-root .parley-main { display: flex; align-items: center; gap: 11px; }
+#parley-root .parley-orb {
+  width: 30px; height: 30px; border-radius: 50%; flex: 0 0 auto;
+  background: linear-gradient(135deg, #5B5BF5, #22C7E6); display: grid; place-items: center;
+  box-shadow: 0 4px 12px -2px rgba(91,91,245,0.5);
+}
+#parley-root .parley-orb svg { width: 15px; height: 15px; color: #fff; }
+#parley-root .parley-wave { display: flex; align-items: center; gap: 2px; height: 20px; flex: 0 0 auto; width: 60px; }
+#parley-root .parley-wave i { width: 3px; height: 3px; border-radius: 3px; background: #c7c7cc; transition: height .1s ease, background .3s ease; }
+#parley-root .parley-pill[data-state="rec"] .parley-wave i { background: linear-gradient(180deg, #ff5a5f, #ff9a6b); }
+#parley-root .parley-text { font-size: 12px; color: #6b6b76; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px; }
+#parley-root .parley-btn {
+  appearance: none; border: 0; cursor: pointer; flex: 0 0 auto; padding: 9px 18px; border-radius: 999px;
+  font-family: inherit; font-size: 13px; font-weight: 500; color: #fff; background: #5B5BF5;
+  box-shadow: 0 4px 12px -3px rgba(91,91,245,0.6); transition: transform .15s cubic-bezier(0.22,1,0.36,1), background .2s;
+}
+#parley-root .parley-btn:hover { background: #4f4fe0; }
+#parley-root .parley-btn:active { transform: scale(0.95); }
+#parley-root .parley-pill[data-state="rec"] .parley-btn { background: #ff5a5f; box-shadow: 0 4px 12px -3px rgba(255,90,95,0.6); }
+
+/* action buttons */
+#parley-root .parley-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; padding: 0 4px 4px; justify-content: flex-end; }
+#parley-root .parley-act {
+  appearance: none; cursor: pointer; font-family: inherit; font-size: 12px; font-weight: 500;
+  padding: 7px 12px; border-radius: 999px; color: #16161d;
+  background: rgba(255,255,255,0.8); border: 1px solid rgba(0,0,0,0.06);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px -3px rgba(0,0,0,0.15); transition: all .15s cubic-bezier(0.22,1,0.36,1);
+}
+#parley-root .parley-act:hover { background: #5B5BF5; color: #fff; border-color: transparent; transform: translateY(-1px); }
