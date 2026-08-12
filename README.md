@@ -152,3 +152,6 @@ The extension popup shows whether the backend is connected.
 | Refine / Draft email fails | Set `GROQ_API_KEY` in `.env` |
 | No speech detected | Check mic permissions; speak clearly after **Speak** |
 | Gibberish transcription | Mic should stream at 16 kHz PCM16 (handled by the extension) |
+
+## SCREENSHOTS
+<img src="ParleyImages/ParleyOutput.png" hspace="10" >
