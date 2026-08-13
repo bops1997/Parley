@@ -1,113 +1,559 @@
-/* Parley — glossy floating glass UI. Scoped + reset so host pages can't distort it. */
-#parley-root, #parley-root * { all: revert; box-sizing: border-box; }
-
-/* pill logo = soundwave inside indigo→cyan square */
-#parley-root .parley-orb.pill-square { background: transparent !important; box-shadow: 0 4px 12px -2px rgba(91,91,245,0.5); border-radius: 10px; overflow: hidden; display: grid; place-items: center; }
-#parley-root .parley-orb.pill-square svg { width: 30px !important; height: 30px !important; }
-
-/* panel brand header */
-#parley-root .parley-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-#parley-root .parley-logo { display: inline-flex; filter: drop-shadow(0 6px 14px rgba(91,91,245,0.4)); }
-#parley-root .parley-logo svg { width: 34px; height: 34px; border-radius: 10px; }
-#parley-root .parley-name { font-size: 19px; font-weight: 600; letter-spacing: -0.03em; color: #16161d; }
+/* Parley — Apple-grade floating glass UI. Scoped so host pages can't distort it. */
+#parley-root, #parley-root *:not(svg):not(svg *) { all: revert; box-sizing: border-box; }
+#parley-root svg { display: block; overflow: visible; flex-shrink: 0; }
 
 #parley-root {
-  position: fixed; bottom: 26px; right: 26px; z-index: 2147483647;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif;
-  letter-spacing: -0.01em;
-  display: flex; flex-direction: column; align-items: flex-end; gap: 12px;
+  --p-accent: #6366f1;
+  --p-accent-soft: #818cf8;
+  --p-violet: #a78bfa;
+  --p-cyan: #22d3ee;
+  --p-mint: #34d399;
+  --p-coral: #ff6b6b;
+  --p-text: #1d1d1f;
+  --p-text-2: #6e6e73;
+  --p-text-3: #aeaeb2;
+  --p-glass: rgba(255, 255, 255, 0.36);
+  --p-glass-strong: rgba(255, 255, 255, 0.52);
+  --p-glass-border: rgba(255, 255, 255, 0.55);
+  --p-glass-edge: rgba(255, 255, 255, 0.78);
+  --p-blur: 52px;
+  --p-shadow: 0 36px 90px -28px rgba(12, 12, 40, 0.48), 0 0 0 0.5px rgba(255, 255, 255, 0.35) inset;
+  --p-spring: cubic-bezier(0.34, 1.45, 0.64, 1);
+  --p-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --p-ease-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);
+
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 2147483647;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", system-ui, sans-serif;
+  letter-spacing: -0.018em;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 14px;
 }
 
-/* centered glass panel + close */
+/* dim veil behind glass panel */
+#parley-root .parley-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: rgba(8, 8, 20, 0.06);
+  -webkit-backdrop-filter: blur(3px) saturate(120%);
+  backdrop-filter: blur(3px) saturate(120%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s var(--p-ease-out);
+}
+#parley-root .parley-backdrop.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ── Glass panel ── */
 #parley-root .parley-glass {
-  position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.96);
-  width: 440px; max-width: 88vw; max-height: 70vh; border-radius: 24px; padding: 26px 28px;
-  background: linear-gradient(155deg, rgba(255,255,255,0.82), rgba(255,255,255,0.6));
-  -webkit-backdrop-filter: blur(34px) saturate(190%); backdrop-filter: blur(34px) saturate(190%);
-  border: 1px solid rgba(255,255,255,0.65);
-  box-shadow: 0 40px 100px -30px rgba(30,30,60,0.55), inset 0 1px 0 rgba(255,255,255,0.95);
-  opacity: 0; pointer-events: none;
-  transition: opacity .35s cubic-bezier(0.22,1,0.36,1), transform .35s cubic-bezier(0.22,1,0.36,1);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  transform: translate(-50%, -46%) scale(0.94);
+  width: 460px;
+  max-width: 90vw;
+  max-height: 72vh;
+  border-radius: 28px;
+  padding: 28px 30px 24px;
+  background:
+    linear-gradient(148deg, rgba(255, 255, 255, 0.48) 0%, rgba(255, 255, 255, 0.22) 42%, rgba(255, 255, 255, 0.32) 100%);
+  -webkit-backdrop-filter: blur(var(--p-blur)) saturate(210%) brightness(1.06);
+  backdrop-filter: blur(var(--p-blur)) saturate(210%) brightness(1.06);
+  border: 1px solid var(--p-glass-border);
+  box-shadow: var(--p-shadow);
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+  transition:
+    opacity 0.42s var(--p-ease-out),
+    transform 0.52s var(--p-spring);
 }
-#parley-root .parley-glass.show { opacity: 1; transform: translate(-50%, -50%) scale(1); pointer-events: auto; }
+#parley-root .parley-glass.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: auto;
+}
 #parley-root .parley-glass::before {
-  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
-  background: linear-gradient(135deg, rgba(255,255,255,0.55), rgba(255,255,255,0) 40%);
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.62) 0%, rgba(255, 255, 255, 0) 38%, rgba(255, 255, 255, 0.08) 100%);
 }
-#parley-root .parley-glass .g-close {
-  position: absolute; top: 16px; right: 16px; width: 28px; height: 28px; border-radius: 50%;
-  border: 0; cursor: pointer; display: grid; place-items: center; font-size: 15px; line-height: 1;
-  color: #6b6b76; background: rgba(0,0,0,0.06); transition: all .15s ease; z-index: 3;
+#parley-root .parley-glass::after {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 55% 45% at 18% 12%, rgba(99, 102, 241, 0.14), transparent 58%),
+    radial-gradient(ellipse 50% 40% at 82% 88%, rgba(34, 211, 238, 0.11), transparent 55%);
+  animation: parleyAmbient 8s ease-in-out infinite alternate;
 }
-#parley-root .parley-glass .g-close:hover { background: rgba(0,0,0,0.12); color: #16161d; }
-#parley-root .parley-glass .g-label {
-  position: relative; font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
-  color: #5B5BF5; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 7px;
+@keyframes parleyAmbient {
+  0% { opacity: 0.75; transform: scale(1); }
+  100% { opacity: 1; transform: scale(1.04); }
 }
-#parley-root .parley-glass .g-dot { width: 7px; height: 7px; border-radius: 50%; background: #ff5a5f; animation: parleyPulse 1.2s ease-in-out infinite; }
-@keyframes parleyPulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .4; transform: scale(0.7); } }
-#parley-root .parley-glass .g-text {
-  position: relative; font-size: 17px; line-height: 1.55; color: #16161d; letter-spacing: -0.015em;
-  min-height: 24px; max-height: 44vh; overflow-y: auto; white-space: pre-wrap;
-}
-#parley-root .parley-glass .g-text.empty { color: #86868b; }
 
-/* emoji + footer */
-#parley-root .parley-emoji-row { display: none; flex-wrap: wrap; gap: 4px; margin-top: 10px; }
-#parley-root .parley-emoji-row.show { display: flex; }
-#parley-root .parley-emoji-row button { appearance: none; border: 0; cursor: pointer; font-size: 20px; padding: 4px 6px; border-radius: 8px; background: transparent; }
-#parley-root .parley-emoji-row button:hover { background: rgba(0,0,0,0.06); }
+#parley-root .parley-brand {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  cursor: grab;
+}
+#parley-root .parley-logo {
+  display: inline-flex;
+  filter: drop-shadow(0 8px 18px rgba(99, 102, 241, 0.38));
+}
+#parley-root .parley-logo svg { width: 36px; height: 36px; border-radius: 11px; }
+#parley-root .parley-name-wrap { display: flex; flex-direction: column; gap: 1px; }
+#parley-root .parley-name {
+  font-size: 20px;
+  font-weight: 650;
+  letter-spacing: -0.035em;
+  color: var(--p-text);
+  line-height: 1.1;
+}
+#parley-root .parley-tagline {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--p-text-2);
+  letter-spacing: -0.01em;
+}
+
+#parley-root .parley-lang-row {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+}
+#parley-root .parley-lang-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--p-text-2);
+  white-space: nowrap;
+}
+#parley-root .parley-lang-select {
+  flex: 1;
+  min-width: 0;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 520;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--p-text);
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+#parley-root .parley-lang-select:focus {
+  outline: none;
+  border-color: rgba(99, 102, 241, 0.55);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
+}
+
+#parley-root .parley-glass .g-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 0;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  color: var(--p-text-2);
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  transition: transform 0.22s var(--p-spring), background 0.2s, color 0.2s;
+  z-index: 4;
+}
+#parley-root .parley-glass .g-close svg { width: 11px; height: 11px; stroke: currentColor; stroke-width: 2.2; }
+#parley-root .parley-glass .g-close:hover {
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--p-text);
+  transform: scale(1.06);
+}
+#parley-root .parley-glass .g-close:active { transform: scale(0.94); }
+
+#parley-root .parley-glass .g-label {
+  position: relative;
+  z-index: 2;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--p-accent);
+  font-weight: 650;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#parley-root .parley-glass .g-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--p-coral);
+  box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.45);
+  animation: parleyPulse 1.6s ease-in-out infinite;
+}
+@keyframes parleyPulse {
+  0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.45); }
+  50% { opacity: 0.55; transform: scale(0.82); box-shadow: 0 0 0 6px rgba(255, 107, 107, 0); }
+}
+
+#parley-root .parley-glass .g-text {
+  position: relative;
+  z-index: 2;
+  font-size: 17.5px;
+  line-height: 1.58;
+  font-weight: 450;
+  color: var(--p-text);
+  letter-spacing: -0.022em;
+  min-height: 28px;
+  max-height: 44vh;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  transition: opacity 0.28s var(--p-ease-out);
+}
+#parley-root .parley-glass .g-text.empty { color: var(--p-text-3); font-weight: 420; }
+#parley-root .parley-glass .g-text.parley-text-in {
+  animation: parleyTextIn 0.38s var(--p-ease-out) both;
+}
+@keyframes parleyTextIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+#parley-root .parley-emoji-row { display: none; flex-wrap: wrap; gap: 4px; margin-top: 12px; position: relative; z-index: 2; }
+#parley-root .parley-emoji-row.show { display: flex; animation: parleyFadeUp 0.32s var(--p-ease-out) both; }
+#parley-root .parley-emoji-row button {
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 6px 8px;
+  border-radius: 10px;
+  background: transparent;
+  transition: transform 0.18s var(--p-spring), background 0.18s;
+}
+#parley-root .parley-emoji-row button:hover {
+  background: rgba(255, 255, 255, 0.45);
+  transform: scale(1.12);
+}
+
 #parley-root .parley-glass .g-foot {
-  display: flex; align-items: center; gap: 8px; margin-top: 16px; padding-top: 14px;
-  border-top: 1px solid rgba(0,0,0,0.07); justify-content: flex-end;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.38);
+  justify-content: flex-end;
 }
 #parley-root .parley-glass .g-btn {
-  appearance: none; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500;
-  padding: 8px 14px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px;
-  border: 1px solid rgba(0,0,0,0.08); color: #16161d; background: rgba(255,255,255,0.7);
-  transition: all .15s cubic-bezier(0.22,1,0.36,1);
+  appearance: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 560;
+  padding: 9px 16px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  color: var(--p-text);
+  background: rgba(255, 255, 255, 0.42);
+  transition: transform 0.2s var(--p-spring), background 0.2s, box-shadow 0.2s;
 }
-#parley-root .parley-glass .g-btn:hover { background: rgba(0,0,0,0.05); }
-#parley-root .parley-glass .g-btn.done { background: linear-gradient(135deg, #5B5BF5, #22C7E6); color: #fff; border-color: transparent; }
-#parley-root .parley-glass .g-btn.done:hover { filter: brightness(1.06); }
+#parley-root .parley-glass .g-btn:hover {
+  background: rgba(255, 255, 255, 0.62);
+  transform: translateY(-1px);
+}
+#parley-root .parley-glass .g-btn:active { transform: scale(0.97); }
+#parley-root .parley-glass .g-btn.done {
+  background: linear-gradient(135deg, var(--p-accent) 0%, var(--p-violet) 52%, var(--p-cyan) 100%);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 6px 20px -6px rgba(99, 102, 241, 0.55);
+}
+#parley-root .parley-glass .g-btn.done:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 8px 24px -6px rgba(99, 102, 241, 0.62);
+}
 
-/* pill (control bar) */
+/* ── Floating pill ── */
 #parley-root .parley-pill {
-  border-radius: 999px; padding: 8px 8px 8px 14px;
-  background: linear-gradient(155deg, rgba(255,255,255,0.85), rgba(255,255,255,0.62));
-  -webkit-backdrop-filter: blur(24px) saturate(180%); backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid rgba(255,255,255,0.6);
-  box-shadow: 0 12px 34px -10px rgba(30,30,60,0.35), inset 0 1px 0 rgba(255,255,255,0.9);
-  transition: box-shadow .3s cubic-bezier(0.22,1,0.36,1);
+  position: relative;
+  z-index: 1;
+  border-radius: 999px;
+  padding: 7px 8px 7px 12px;
+  background:
+    linear-gradient(152deg, rgba(255, 255, 255, 0.58) 0%, rgba(255, 255, 255, 0.28) 100%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%) brightness(1.04);
+  backdrop-filter: blur(28px) saturate(190%) brightness(1.04);
+  border: 1px solid rgba(255, 255, 255, 0.62);
+  box-shadow:
+    0 16px 40px -14px rgba(15, 15, 45, 0.38),
+    0 0 0 0.5px rgba(255, 255, 255, 0.5) inset;
+  transition:
+    box-shadow 0.38s var(--p-ease-out),
+    transform 0.38s var(--p-spring),
+    border-color 0.3s;
+  animation: parleyPillIn 0.65s var(--p-spring) both;
 }
-#parley-root .parley-pill[data-state="rec"] { box-shadow: 0 14px 40px -10px rgba(255,90,95,0.45), inset 0 1px 0 rgba(255,255,255,0.9); }
-#parley-root .parley-main { display: flex; align-items: center; gap: 11px; }
-#parley-root .parley-orb {
-  width: 30px; height: 30px; border-radius: 50%; flex: 0 0 auto;
-  background: linear-gradient(135deg, #5B5BF5, #22C7E6); display: grid; place-items: center;
-  box-shadow: 0 4px 12px -2px rgba(91,91,245,0.5);
+@keyframes parleyPillIn {
+  from { opacity: 0; transform: translateY(14px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
-#parley-root .parley-orb svg { width: 15px; height: 15px; color: #fff; }
-#parley-root .parley-wave { display: flex; align-items: center; gap: 2px; height: 20px; flex: 0 0 auto; width: 60px; }
-#parley-root .parley-wave i { width: 3px; height: 3px; border-radius: 3px; background: #c7c7cc; transition: height .1s ease, background .3s ease; }
-#parley-root .parley-pill[data-state="rec"] .parley-wave i { background: linear-gradient(180deg, #ff5a5f, #ff9a6b); }
-#parley-root .parley-text { font-size: 12px; color: #6b6b76; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px; }
-#parley-root .parley-btn {
-  appearance: none; border: 0; cursor: pointer; flex: 0 0 auto; padding: 9px 18px; border-radius: 999px;
-  font-family: inherit; font-size: 13px; font-weight: 500; color: #fff; background: #5B5BF5;
-  box-shadow: 0 4px 12px -3px rgba(91,91,245,0.6); transition: transform .15s cubic-bezier(0.22,1,0.36,1), background .2s;
+#parley-root .parley-pill:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 22px 48px -16px rgba(15, 15, 45, 0.42),
+    0 0 0 0.5px rgba(255, 255, 255, 0.55) inset;
 }
-#parley-root .parley-btn:hover { background: #4f4fe0; }
-#parley-root .parley-btn:active { transform: scale(0.95); }
-#parley-root .parley-pill[data-state="rec"] .parley-btn { background: #ff5a5f; box-shadow: 0 4px 12px -3px rgba(255,90,95,0.6); }
 
-/* action buttons */
-#parley-root .parley-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; padding: 0 4px 4px; justify-content: flex-end; }
-#parley-root .parley-act {
-  appearance: none; cursor: pointer; font-family: inherit; font-size: 12px; font-weight: 500;
-  padding: 7px 12px; border-radius: 999px; color: #16161d;
-  background: rgba(255,255,255,0.8); border: 1px solid rgba(0,0,0,0.06);
-  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
-  box-shadow: 0 2px 8px -3px rgba(0,0,0,0.15); transition: all .15s cubic-bezier(0.22,1,0.36,1);
+#parley-root.parley-mic-active .parley-pill {
+  border-color: rgba(255, 107, 107, 0.42);
+  box-shadow:
+    0 0 0 2px rgba(255, 107, 107, 0.14),
+    0 16px 40px -14px rgba(255, 107, 107, 0.22);
 }
-#parley-root .parley-act:hover { background: #5B5BF5; color: #fff; border-color: transparent; transform: translateY(-1px); }
+#parley-root .parley-pill[data-state="rec"]::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  border: 1.5px solid rgba(255, 107, 107, 0.35);
+  animation: parleyRecRing 2s ease-out infinite;
+  pointer-events: none;
+}
+@keyframes parleyRecRing {
+  0% { opacity: 0.85; transform: scale(1); }
+  70%, 100% { opacity: 0; transform: scale(1.06); }
+}
+
+#parley-root .parley-grip {
+  display: flex;
+  align-items: center;
+  padding: 0 5px 0 2px;
+  font-size: 15px;
+  color: var(--p-text-3);
+  cursor: grab;
+  user-select: none;
+  line-height: 1;
+  transition: color 0.2s;
+}
+#parley-root .parley-grip:hover { color: var(--p-accent-soft); }
+#parley-root .parley-grip:active { cursor: grabbing; }
+
+#parley-root .parley-main { display: flex; align-items: center; gap: 11px; }
+#parley-root .parley-logo.pill-logo {
+  display: block;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  object-fit: cover;
+  filter: drop-shadow(0 5px 14px rgba(99, 102, 241, 0.42));
+  transition: transform 0.3s var(--p-spring);
+}
+#parley-root .parley-pill[data-state="rec"] .parley-logo.pill-logo {
+  animation: parleyLogoPulse 1.4s ease-in-out infinite;
+}
+@keyframes parleyLogoPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+
+#parley-root .parley-wave {
+  display: flex;
+  align-items: center;
+  gap: 2.5px;
+  height: 22px;
+  flex: 0 0 auto;
+  width: 64px;
+}
+#parley-root .parley-wave i {
+  width: 3px;
+  height: 4px;
+  border-radius: 3px;
+  background: var(--p-text-3);
+  transition: height 0.12s ease, background 0.35s ease, opacity 0.2s;
+}
+#parley-root .parley-pill[data-state="rec"] .parley-wave i {
+  background: linear-gradient(180deg, #ff6b6b, #ff9f7a);
+}
+#parley-root .parley-pill[data-state="wake"] .parley-text { color: var(--p-accent); max-width: 168px; }
+#parley-root .parley-pill[data-state="wake"] .parley-wave i {
+  background: linear-gradient(180deg, var(--p-accent), var(--p-cyan));
+  animation: parleyWakeBar 1.5s ease-in-out infinite;
+}
+#parley-root .parley-pill[data-state="voice"] .parley-text { color: var(--p-mint); max-width: 148px; }
+#parley-root .parley-pill[data-state="voice"] .parley-wave i {
+  background: linear-gradient(180deg, var(--p-mint), var(--p-cyan));
+}
+@keyframes parleyWakeBar {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+#parley-root .parley-text {
+  font-size: 12.5px;
+  font-weight: 520;
+  color: var(--p-text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 118px;
+  transition: color 0.25s;
+}
+
+#parley-root .parley-btn {
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+  flex: 0 0 auto;
+  padding: 9px 20px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: #fff;
+  background: linear-gradient(135deg, var(--p-accent) 0%, var(--p-violet) 100%);
+  box-shadow: 0 6px 18px -5px rgba(99, 102, 241, 0.55);
+  transition: transform 0.22s var(--p-spring), box-shadow 0.22s, filter 0.2s;
+}
+#parley-root .parley-btn:hover {
+  filter: brightness(1.06);
+  box-shadow: 0 8px 22px -5px rgba(99, 102, 241, 0.62);
+  transform: translateY(-1px);
+}
+#parley-root .parley-btn:active { transform: scale(0.96); }
+#parley-root .parley-pill[data-state="rec"] .parley-btn {
+  background: linear-gradient(135deg, #ff6b6b, #ff8e72);
+  box-shadow: 0 6px 18px -5px rgba(255, 107, 107, 0.55);
+}
+
+#parley-root .parley-pill[data-state="rec"] {
+  box-shadow: 0 18px 44px -12px rgba(255, 107, 107, 0.32), 0 0 0 0.5px rgba(255, 255, 255, 0.5) inset;
+}
+#parley-root .parley-pill.parley-wake-flash,
+#parley-root .parley-pill.parley-hotkey-flash {
+  animation: parleyFlash 0.55s var(--p-ease-out);
+}
+@keyframes parleyFlash {
+  0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.45), 0 16px 40px -14px rgba(15, 15, 45, 0.38); }
+  100% { box-shadow: 0 0 0 8px rgba(99, 102, 241, 0), 0 16px 40px -14px rgba(15, 15, 45, 0.38); }
+}
+
+/* action chips */
+#parley-root .parley-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 11px;
+  padding: 0 4px 5px;
+  justify-content: flex-end;
+  animation: parleyFadeUp 0.35s var(--p-ease-out) both;
+}
+@keyframes parleyFadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+#parley-root .parley-act {
+  appearance: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 560;
+  letter-spacing: -0.01em;
+  padding: 7px 13px;
+  border-radius: 999px;
+  color: var(--p-text);
+  background: rgba(255, 255, 255, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 2px 10px -4px rgba(15, 15, 45, 0.18);
+  transition: transform 0.22s var(--p-spring), background 0.22s, color 0.22s, border-color 0.22s, box-shadow 0.22s;
+}
+#parley-root .parley-act:hover {
+  background: linear-gradient(135deg, var(--p-accent), var(--p-violet));
+  color: #fff;
+  border-color: transparent;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px -6px rgba(99, 102, 241, 0.45);
+}
+#parley-root .parley-act:active { transform: scale(0.97); }
+#parley-root .parley-act.parley-reply-ctx {
+  border-color: rgba(99, 102, 241, 0.28);
+  background: rgba(99, 102, 241, 0.1);
+}
+#parley-root .parley-act.parley-voice-toggle.active {
+  background: linear-gradient(135deg, var(--p-mint), var(--p-cyan));
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 6px 16px -6px rgba(52, 211, 153, 0.42);
+}
+
+/* field hint chip */
+#parley-field-hint-root .parley-field-hint {
+  position: fixed;
+  z-index: 2147483646;
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  padding: 6px 12px;
+  border-radius: 999px;
+  color: var(--p-accent, #6366f1);
+  background: rgba(255, 255, 255, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: 0 8px 24px -8px rgba(15, 15, 45, 0.28);
+  transition: transform 0.25s var(--p-spring), background 0.25s, color 0.25s, box-shadow 0.25s;
+  animation: parleyHintIn 0.4s var(--p-spring) both;
+}
+@keyframes parleyHintIn {
+  from { opacity: 0; transform: translateY(6px) scale(0.94); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+#parley-field-hint-root .parley-field-hint:hover {
+  background: linear-gradient(135deg, #6366f1, #a78bfa);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px -8px rgba(99, 102, 241, 0.42);
+}
