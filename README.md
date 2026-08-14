@@ -4,6 +4,11 @@
 
 **Current version:** `1.2.5`
 
+## Screenshots
+
+<img src="ParleyImages/Parley1output.png" hspace="10">
+<img src="ParleyImages/Parley2Output.png" hspace="10">
+
 ## Features
 
 | Feature | What it does |
@@ -221,8 +226,3 @@ Open the extension **popup** to toggle **Hey Parley**, **Field hint**, and **Voi
 | Wake word not firing | Enable in popup, click the page once, then say “Hey Parley” |
 | UI looks stale after update | Reload extension at `chrome://extensions`, refresh tabs |
 | Gibberish transcription | Mic streams at 16 kHz PCM16 (handled by the extension) |
-
-## Screenshots
-
-<img src="ParleyImages/Parley1output.png" hspace="10">
-<img src="ParleyImages/Parley2Output.png" hspace="10">
