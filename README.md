@@ -224,4 +224,5 @@ Open the extension **popup** to toggle **Hey Parley**, **Field hint**, and **Voi
 
 ## Screenshots
 
-<img src="ParleyImages/ParleyOutput.png" hspace="10">
+<img src="ParleyImages/Parley1output.png" hspace="10">
+<img src="ParleyImages/Parley2Output.png" hspace="10">
